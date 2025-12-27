@@ -5,31 +5,38 @@ const { Pool } = pkg;
 dotenv.config();
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: 5432,
+  // Usamos la URL completa
+  connectionString: process.env.DATABASE_URL,
+  // Neon y la mayoría de los hosts cloud requieren SSL
+  ssl: {
+    rejectUnauthorized: false,
+  },
   max: 10,
   idleTimeoutMillis: 30000,
-  options: "-c search_path=philips_db",
 });
 
 // Función para verificar la conexión
 async function checkConnection() {
   try {
-    const r = await pool.query("SET search_path TO philips_db;");
-    const res = await pool.query("SELECT 1");
-    console.log("Conexión exitosa al pool de PostgreSQL");
+    // IMPORTANTE: Neon crea por defecto el esquema 'public'.
+    // Si tus tablas están en 'philips_db', debemos asegurarnos de crear el esquema
+    // y establecer el path en cada conexión.
+    await pool.query("CREATE SCHEMA IF NOT EXISTS philips_db;");
+    await pool.query("SET search_path TO philips_db, public;");
+
+    await pool.query("SELECT 1");
+    console.log("✅ Conexión exitosa a Neon Cloud");
     return true;
   } catch (error) {
-    console.error("Error al conectar con el pool:", error);
+    console.error("❌ Error al conectar con Neon:", error);
     return false;
   }
 }
 
-// Llamar a la función
 checkConnection();
+
+// El resto de tus funciones (getTodosByID, createTodo, etc.)
+// funcionarán exactamente igual porque usan 'pool.query'.
 
 /**
  * obtener todos los todos por id de usuario
