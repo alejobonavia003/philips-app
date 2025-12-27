@@ -13,6 +13,8 @@ import {
   addFinanceRecord,
   getUserBalance,
   getFinanceHistory,
+  pauseTask,
+  startTask,
 } from "./database.js";
 import cors from "cors";
 
