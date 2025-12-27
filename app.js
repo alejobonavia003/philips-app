@@ -171,7 +171,7 @@ app.post("/finances", async (req, res) => {
       .status(500)
       .send({ message: "Error al registrar el movimiento financiero." });
   }
-});
+}); //OK
 
 /**
  * OBTENER EL BALANCE TOTAL DE UN USUARIO
@@ -183,7 +183,7 @@ app.get("/finances/balance/:id", async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: "Error al obtener el balance." });
   }
-});
+}); //OK
 
 /**
  * OBTENER HISTORIAL FINANCIERO DE UN USUARIO
@@ -195,6 +195,22 @@ app.get("/finances/user/:id", async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: "Error al obtener el historial." });
   }
+}); //OK
+
+/**
+ * dar inicio a una tarea
+ */
+app.post("/todos/start/:id", async (req, res) => {
+  const log = await startTask(req.params.id);
+  res.status(200).send(log);
+});
+
+/**
+ * pausar una tarea
+ */
+app.post("/todos/pause/:id", async (req, res) => {
+  const log = await pauseTask(req.params.id);
+  res.status(200).send(log);
 });
 
 //sufrimos por que nos aferramos a una vercion de la realidad que ya no existe
