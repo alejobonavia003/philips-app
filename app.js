@@ -10,11 +10,14 @@ import {
   toggleTodo,
   shareTodo,
   checkAlreadyShared,
+  addFinanceRecord,
+  getUserBalance,
+  getFinanceHistory,
 } from "./database.js";
 import cors from "cors";
 
 const corsOptions = {
-  origin: "192.168.0.5", // Reemplaza con el origen de tu cliente
+  origin: "*", // Reemplaza con el origen de tu cliente
   methods: "GET,PUT,POST,DELETE",
   credentials: true,
 };
@@ -141,6 +144,58 @@ app.get("/user/:id", async (req, res) => {
   const user = await getUserById(req.params.id);
   res.status(200).send(user); //
 }); //OK
+
+/**
+ * REGISTRAR UN MOVIMIENTO FINANCIERO (Ingreso o Egreso)
+ * Body: { user_id, amount, type, description, todo_id (opcional) }
+ */
+app.post("/finances", async (req, res) => {
+  try {
+    const { user_id, amount, type, description, todo_id } = req.body;
+
+    if (!user_id || !amount || !type) {
+      return res.status(400).send({ message: "Faltan datos obligatorios." });
+    }
+
+    const record = await addFinanceRecord(
+      user_id,
+      amount,
+      type,
+      description,
+      todo_id
+    );
+    res.status(201).send(record);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "Error al registrar el movimiento financiero." });
+  }
+});
+
+/**
+ * OBTENER EL BALANCE TOTAL DE UN USUARIO
+ */
+app.get("/finances/balance/:id", async (req, res) => {
+  try {
+    const balance = await getUserBalance(req.params.id);
+    res.status(200).send(balance);
+  } catch (error) {
+    res.status(500).send({ message: "Error al obtener el balance." });
+  }
+});
+
+/**
+ * OBTENER HISTORIAL FINANCIERO DE UN USUARIO
+ */
+app.get("/finances/user/:id", async (req, res) => {
+  try {
+    const history = await getFinanceHistory(req.params.id);
+    res.status(200).send(history);
+  } catch (error) {
+    res.status(500).send({ message: "Error al obtener el historial." });
+  }
+});
 
 //sufrimos por que nos aferramos a una vercion de la realidad que ya no existe
 
