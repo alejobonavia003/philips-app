@@ -1,0 +1,26 @@
+import express from "express";
+import cors from "cors";
+import todoRoutes from "./routes/todoRoutes.js";
+import financeRoutes from "./routes/financeRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
+const app = express();
+
+const corsOptions = {
+  origin: "*",
+  methods: "GET,PUT,POST,DELETE",
+  credentials: true,
+};
+
+app.use(express.json());
+app.use(cors(corsOptions));
+
+// Definición de Rutas Maestras
+app.use("/todos", todoRoutes); // Todo lo que empiece con /todos va a todoRoutes
+app.use("/finances", financeRoutes); // Todo lo que empiece con /finances va a financeRoutes
+app.use("/user", userRoutes); // ...
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} 🚀`);
+});
