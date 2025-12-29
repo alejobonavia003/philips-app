@@ -15,7 +15,7 @@ import {
   getFinanceHistory,
   pauseTask,
   startTask,
-} from "./database.js";
+} from "../database.js";
 import cors from "cors";
 
 const corsOptions = {
@@ -88,9 +88,6 @@ app.get("/todos/shared_todos/:id", async (req, res) => {
   res.status(200).send({ author, sharedTodo });
 }); //OK
 
-/**
- * compartir un todo con otro usuario por email
- */
 /**
  * compartir un todo con otro usuario por email
  */
@@ -218,5 +215,5 @@ app.post("/todos/pause/:id", async (req, res) => {
 //sufrimos por que nos aferramos a una vercion de la realidad que ya no existe
 
 app.listen(8080, () => {
-  console.log("Server is running on port 8080");
+  console.log("Server is running on ports 8080");
 });
