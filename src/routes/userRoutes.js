@@ -6,4 +6,4 @@ const router = express.Router();
 router.get("/:id", userController.getUserByID); //
 router.get("/:email", userController.getUserbyEmail); //nueva
 
-export default router;
+export default router; //////////////
