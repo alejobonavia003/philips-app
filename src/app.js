@@ -21,6 +21,6 @@ app.use("/finances", financeRoutes); // Todo lo que empiece con /finances va a f
 app.use("/user", userRoutes); // ...
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(8080, () => {
   console.log(`Server running on port ${PORT} 🚀`);
 });
