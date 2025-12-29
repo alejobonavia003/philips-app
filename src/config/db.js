@@ -11,6 +11,19 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
 });
 
+// ESTO ES LO QUE FALTA:
+const initDb = async () => {
+  try {
+    // Forzamos a que busque en tu esquema y luego en public
+    await pool.query("SET search_path TO philips_db, public;");
+    console.log("✅ Schema search_path configurado");
+  } catch (err) {
+    console.error("❌ Error configurando el search_path:", err);
+  }
+};
+
+initDb();
+
 // Verificación de conexión
 pool.on("connect", () => {
   console.log("Conexion exitosa con Neon");
