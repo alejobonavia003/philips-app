@@ -22,13 +22,27 @@ export const getDailyStats = async (user_id) => {
 export const getWeeklyProductivity = async (user_id) => {
   const { rows } = await query(
     `SELECT 
-        TO_CHAR(start_time, 'Dy') as day, 
-        SUM(duration_seconds) / 3600 as hours
+        -- Traducimos el número del día (1=Lunes) a texto en Español
+        CASE EXTRACT(ISODOW FROM start_time)
+            WHEN 1 THEN 'Lun'
+            WHEN 2 THEN 'Mar'
+            WHEN 3 THEN 'Mié'
+            WHEN 4 THEN 'Jue'
+            WHEN 5 THEN 'Vie'
+            WHEN 6 THEN 'Sáb'
+            WHEN 7 THEN 'Dom'
+        END as day,
+        
+        -- Cálculo exacto sin redondeo (numeric)
+        SUM(duration_seconds)::numeric / 3600.0 as hours
+
      FROM time_logs tl
      JOIN todos t ON tl.todo_id = t.id
      WHERE t.user_id = $1 
        AND start_time >= CURRENT_DATE - INTERVAL '7 days'
-     GROUP BY day, DATE(start_time)
+     
+     -- Agrupamos por la fecha exacta y por el número de día para que no falle
+     GROUP BY DATE(start_time), EXTRACT(ISODOW FROM start_time)
      ORDER BY DATE(start_time) ASC`,
     [user_id]
   );
