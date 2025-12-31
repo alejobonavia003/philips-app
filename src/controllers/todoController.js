@@ -28,23 +28,34 @@ export const getTodoById = async (req, res) => {
 
 /**
  * Crear un todo para un usuario
+/**
+ * CREAR UNA NUEVA TAREA
+ * Body: { user_id, title, description?, mission_id? }
  */
 export const createNewTodo = async (req, res) => {
   try {
-    // 1. Agregamos mission_id aquí
     const { user_id, title, description, mission_id } = req.body;
 
-    // 2. Lo pasamos a la función del modelo (asegúrate de que el orden coincida con tu modelo)
+    if (!user_id || !title) {
+      return res.status(400).json({
+        error: "user_id y title son obligatorios",
+      });
+    }
+
     const newTodo = await todoModel.createTodo(
       user_id,
       title,
-      description,
-      mission_id
+      description || null,
+      mission_id || null
     );
 
-    res.status(201).json(newTodo);
+    return res.status(201).json(newTodo);
   } catch (error) {
-    // ...
+    console.error("Error al crear todo:", error);
+
+    return res.status(500).json({
+      error: "Error interno al crear la tarea",
+    });
   }
 };
 

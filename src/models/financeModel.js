@@ -12,7 +12,7 @@ export const addFinanceRecord = async (
   todo_id = null,
   mission_id = null
 ) => {
-  const { rows } = await pool.query(
+  const { rows } = await query(
     `INSERT INTO finances (user_id, amount, type, description, todo_id, mission_id)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,

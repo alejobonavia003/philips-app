@@ -43,7 +43,7 @@ export const createTodo = async (
   description,
   mission_id = null
 ) => {
-  const { rows } = await pool.query(
+  const { rows } = await query(
     `INSERT INTO todos (user_id, title, description, mission_id)
      VALUES ($1, $2, $3, $4)
      RETURNING *`,
