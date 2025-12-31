@@ -3,19 +3,23 @@ import { query } from "../config/db.js";
 /**
  * Registrar un movimiento de dinero (Ingreso o Egreso)
  */
-export async function addFinanceRecord(
+// AHORA:
+export const addFinanceRecord = async (
   user_id,
   amount,
   type,
   description,
-  todo_id = null
-) {
-  const result = await query(
-    "INSERT INTO finances (user_id, amount, type, description, todo_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-    [user_id, amount, type, description, todo_id]
+  todo_id = null,
+  mission_id = null
+) => {
+  const { rows } = await pool.query(
+    `INSERT INTO finances (user_id, amount, type, description, todo_id, mission_id)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [user_id, amount, type, description, todo_id, mission_id]
   );
-  return result.rows[0];
-}
+  return rows[0];
+};
 
 /**
  * Obtener el balance total de un usuario

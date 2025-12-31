@@ -31,3 +31,28 @@ CREATE TABLE IF NOT EXISTS time_logs (
     end_time TIMESTAMP, -- Si es NULL, la tarea sigue corriendo
     duration_seconds INT DEFAULT 0
 );
+
+
+-- VOY A AGREGAR LA PARTE DE LAS MISIONES
+-- 1. Tabla de Misiones
+CREATE TABLE missions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL, -- Por ahora será 1
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    type VARCHAR(50) NOT NULL CHECK (type IN ('primaria', 'secundaria')),
+    status VARCHAR(50) DEFAULT 'activa', -- activa, completada, pausada
+    parent_id INTEGER REFERENCES missions(id), -- Para que una secundaria pertenezca a una primaria
+    financial_goal NUMERIC(10, 2) DEFAULT 0, -- Meta de dinero (ej: 1.000.000 para el auto)
+    deadline DATE, -- Meta temporal
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Actualizar Tareas para que pertenezcan a una Misión
+ALTER TABLE todos 
+ADD COLUMN mission_id INTEGER REFERENCES missions(id);
+
+-- 3. Actualizar Finanzas para que (opcionalmente) se liguen directo a una Misión
+-- (Aunque generalmente se ligan a través de la tarea, a veces hay gastos directos de misión)
+ALTER TABLE finances 
+ADD COLUMN mission_id INTEGER REFERENCES missions(id);

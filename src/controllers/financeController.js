@@ -6,7 +6,8 @@ import * as financeModel from "../models/financeModel.js";
  */
 export const addTransaction = async (req, res) => {
   try {
-    const { user_id, amount, type, description, todo_id } = req.body;
+    const { user_id, amount, type, description, todo_id, mission_id } =
+      req.body;
 
     // Validaciones básicas
     if (!user_id || !amount || !type) {
@@ -20,7 +21,8 @@ export const addTransaction = async (req, res) => {
       amount,
       type,
       description,
-      todo_id
+      todo_id,
+      mission_id
     );
 
     res.status(201).send(record);

@@ -35,20 +35,22 @@ export async function getSharedTodoById(id) {
   return rows.rows;
 }
 
-/**
- * crear un todo de un usuario
- * @param {*} user_id
- * @param {*} title
- * @param {*} description
- * @returns
- */
-export async function createTodo(user_id, title, description) {
-  const result = await query(
-    "INSERT INTO todos (user_id, title, description) VALUES ($1, $2, $3) RETURNING *",
-    [user_id, title, description]
+// Antes: export const createTodo = async (user_id, title, description) => { ...
+// AHORA:
+export const createTodo = async (
+  user_id,
+  title,
+  description,
+  mission_id = null
+) => {
+  const { rows } = await pool.query(
+    `INSERT INTO todos (user_id, title, description, mission_id)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [user_id, title, description, mission_id]
   );
-  return result.rows[0];
-}
+  return rows[0];
+};
 
 /**
  * funcion para eliminar un todo

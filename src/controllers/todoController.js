@@ -31,11 +31,20 @@ export const getTodoById = async (req, res) => {
  */
 export const createNewTodo = async (req, res) => {
   try {
-    const { user_id, title, description } = req.body;
-    const todo = await todoModel.createTodo(user_id, title, description);
-    res.status(200).send(todo);
+    // 1. Agregamos mission_id aquí
+    const { user_id, title, description, mission_id } = req.body;
+
+    // 2. Lo pasamos a la función del modelo (asegúrate de que el orden coincida con tu modelo)
+    const newTodo = await todoModel.createTodo(
+      user_id,
+      title,
+      description,
+      mission_id
+    );
+
+    res.status(201).json(newTodo);
   } catch (error) {
-    res.status(500).send({ message: "Error creando tarea" });
+    // ...
   }
 };
 
