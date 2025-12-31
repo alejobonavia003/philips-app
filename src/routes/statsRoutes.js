@@ -7,5 +7,6 @@ const router = express.Router();
 router.get("/daily/:id", statsCtrl.getDaily);
 router.get("/weekly/:id", statsCtrl.getWeekly);
 router.get("/correlation/:id", statsCtrl.getCorrelation);
+router.get("/history/:id", statsCtrl.getHistory);
 
 export default router;

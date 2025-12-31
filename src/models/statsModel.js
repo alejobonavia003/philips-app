@@ -51,3 +51,20 @@ export const getTimeMoneyCorrelation = async (user_id) => {
   );
   return rows;
 };
+
+export const getTimeHistory = async (user_id) => {
+  const { rows } = await query(
+    `SELECT 
+        t.title, 
+        tl.start_time, 
+        tl.duration_seconds
+     FROM time_logs tl
+     JOIN todos t ON tl.todo_id = t.id
+     WHERE t.user_id = $1 
+       AND tl.duration_seconds IS NOT NULL -- Solo sesiones terminadas
+     ORDER BY tl.start_time DESC
+     LIMIT 20`,
+    [user_id]
+  );
+  return rows;
+};
