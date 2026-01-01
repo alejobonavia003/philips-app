@@ -110,3 +110,20 @@ export async function checkAlreadyShared(todo_id, shared_with_id) {
   );
   return result.rows.length > 0;
 }
+
+export const updateTodo = async (
+  id,
+  { title, description, is_completed, mission_id }
+) => {
+  const { rows } = await query(
+    `UPDATE todos
+     SET title = COALESCE($1, title),
+         description = COALESCE($2, description),
+         is_completed = COALESCE($3, is_completed),
+         mission_id = COALESCE($4, mission_id)
+     WHERE id = $5
+     RETURNING *`,
+    [title, description, is_completed, mission_id, id]
+  );
+  return rows[0];
+};

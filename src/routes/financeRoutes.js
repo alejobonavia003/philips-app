@@ -7,5 +7,6 @@ const router = express.Router();
 router.post("/", financeController.addTransaction);
 router.get("/balance/:id", financeController.getBalance);
 router.get("/user/:id", financeController.getHistory);
+router.delete("/:id", financeController.remove);
 
 export default router;

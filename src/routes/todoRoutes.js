@@ -11,6 +11,7 @@ router.delete("/:id", todoController.deleteTodo); //
 router.put("/:id", todoController.toggleTodo); //
 router.get("/shared_todos/:id", todoController.getSharedTodoUsers); //
 router.post("/shared_todos", todoController.shareTodo); //
+router.put("/update/:id", todoController.updateTodo);
 
 // Rutas de tiempo
 router.post("/start/:id", todoController.startTodo);

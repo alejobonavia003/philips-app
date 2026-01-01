@@ -51,3 +51,8 @@ export async function getFinanceHistory(user_id) {
   );
   return result.rows;
 }
+
+export const deleteFinance = async (id) => {
+  const { rowCount } = await query("DELETE FROM finances WHERE id = $1", [id]);
+  return rowCount > 0;
+};

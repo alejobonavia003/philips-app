@@ -8,5 +8,6 @@ router.get("/user/:userId", missionCtrl.getAll); // Todas
 router.get("/primaries/:userId", missionCtrl.getPrimaries); // Solo primarias
 router.get("/secondaries/:parentId", missionCtrl.getSecondaries); // Hijos de una primaria
 router.delete("/:id", missionCtrl.remove);
+router.put("/:id", missionCtrl.update);
 
 export default router;

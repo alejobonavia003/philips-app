@@ -175,3 +175,19 @@ export const pauseTodo = async (req, res) => {
     res.status(500).send({ message: "Error pausando tarea" });
   }
 };
+
+export const updateTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // req.body puede traer { title: "Nuevo" } O { is_completed: true } O ambos
+    const updated = await todoModel.updateTodo(id, req.body);
+
+    if (!updated)
+      return res.status(404).json({ message: "Tarea no encontrada" });
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al actualizar tarea" });
+  }
+};

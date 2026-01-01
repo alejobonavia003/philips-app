@@ -61,3 +61,15 @@ export const getHistory = async (req, res) => {
     });
   }
 };
+
+export const remove = async (req, res) => {
+  try {
+    const deleted = await financeModel.deleteFinance(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ message: "Registro no encontrado" });
+    res.status(200).json({ message: "Registro eliminado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al eliminar finanza" });
+  }
+};

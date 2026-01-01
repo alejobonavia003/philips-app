@@ -72,3 +72,19 @@ export const remove = async (req, res) => {
     res.status(500).json({ message: "Error al eliminar misión" });
   }
 };
+
+export const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedMission = await missionModel.updateMission(id, req.body);
+
+    if (!updatedMission) {
+      return res.status(404).json({ message: "Misión no encontrada" });
+    }
+
+    res.status(200).json(updatedMission);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al actualizar misión" });
+  }
+};
