@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import { query } from "../config/db.js";
 
 // Crear una misión (puede ser primaria o secundaria si trae parent_id)
 export const createMission = async (

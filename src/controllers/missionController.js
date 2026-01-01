@@ -37,7 +37,7 @@ export const create = async (req, res) => {
 
 export const getAll = async (req, res) => {
   try {
-    const missions = await missionModel.getAllMissions(req.params.userId);
+    const missions = await missionModel.getAllMissions(req.params.id);
     res.status(200).json(missions);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener misiones" });
