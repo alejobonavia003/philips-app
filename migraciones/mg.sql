@@ -56,3 +56,10 @@ ADD COLUMN mission_id INTEGER REFERENCES missions(id);
 -- (Aunque generalmente se ligan a través de la tarea, a veces hay gastos directos de misión)
 ALTER TABLE finances 
 ADD COLUMN mission_id INTEGER REFERENCES missions(id);
+
+--decidi eliminar todo lo que serian missiones secundarias 
+SET search_path TO philips_db;
+
+-- 1. Eliminar columnas dependientes
+ALTER TABLE missions DROP COLUMN IF EXISTS parent_id;
+ALTER TABLE missions DROP COLUMN IF EXISTS type;
