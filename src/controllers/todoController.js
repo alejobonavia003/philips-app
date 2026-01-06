@@ -7,7 +7,13 @@ import * as userModel from "../models/userModel.js";
  */
 export const getTodosByUser = async (req, res) => {
   try {
-    const todos = await todoModel.getTodosByID(req.params.id);
+    const { date } = req.query;
+    let todos;
+    if (date) {
+      todos = await todoModel.getTodosByScheduledDate(req.params.id, date);
+    } else {
+      todos = await todoModel.getTodosByID(req.params.id);
+    }
     res.status(200).send(todos);
   } catch (error) {
     res.status(500).json({ message: error.message });

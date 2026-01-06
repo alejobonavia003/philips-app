@@ -5,6 +5,7 @@ import financeRoutes from "./routes/financeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import statsRoutes from "./routes/statsRoutes.js";
 import missionRoutes from "./routes/missionRoutes.js";
+import habitRoutes from "./routes/habitRoutes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/finances", financeRoutes); // Todo lo que empiece con /finances va a f
 app.use("/user", userRoutes); // ...
 app.use("/stats", statsRoutes);
 app.use("/missions", missionRoutes);
+app.use("/habits", habitRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(8080, () => {

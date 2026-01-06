@@ -14,6 +14,24 @@ export const getTodosByID = async (id) => {
 };
 
 /**
+ * Obtener todos los todos de un usuario filtrados por fecha programada (scheduled_date)
+ * @param {id usuario} user_id
+ * @param {string} scheduled_date (YYYY-MM-DD)
+ */
+export const getTodosByScheduledDate = async (user_id, scheduled_date) => {
+  const rows = await query(
+    `SELECT todos.*, shared_todos.shared_with_id
+     FROM todos
+     LEFT JOIN shared_todos ON todos.id = shared_todos.todo_id
+     WHERE (todos.user_id = $1 OR shared_todos.shared_with_id = $1)
+       AND todos.scheduled_date::date = $2::date
+     ORDER BY todos.created_at DESC`,
+    [user_id, scheduled_date]
+  );
+  return rows.rows;
+};
+
+/**
  * obtener todo por id
  * @param {todo id} id
  * @returns

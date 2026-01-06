@@ -58,8 +58,30 @@ ALTER TABLE finances
 ADD COLUMN mission_id INTEGER REFERENCES missions(id);
 
 --decidi eliminar todo lo que serian missiones secundarias 
-SET search_path TO philips_db;
+
 
 -- 1. Eliminar columnas dependientes
 ALTER TABLE missions DROP COLUMN IF EXISTS parent_id;
 ALTER TABLE missions DROP COLUMN IF EXISTS type;
+
+SET search_path TO philips_db;
+
+-- Habit Tracker
+CREATE TABLE habits (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    frequency VARCHAR(50) DEFAULT 'daily', -- daily, weekly
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE habit_logs (
+    id SERIAL PRIMARY KEY,
+    habit_id INT REFERENCES habits(id) ON DELETE CASCADE,
+    date DATE NOT NULL,
+    completed BOOLEAN DEFAULT FALSE,
+    UNIQUE(habit_id, date)
+);
+
+-- Planificación Diaria
+ALTER TABLE todos ADD COLUMN scheduled_date DATE DEFAULT CURRENT_DATE;
