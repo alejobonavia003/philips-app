@@ -1,0 +1,575 @@
+{
+  "info": {
+    "name": "Philips - Full API",
+    "_postman_id": "philips-full-api-001",
+    "description": "Collection para testear todos los endpoints del servidor (smoke tests)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Todos",
+      "item": [
+        {
+          "name": "Create Todo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 1,\n  \"title\": \"Test Todo\",\n  \"description\": \"creado por postman\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/todos",
+              "host": ["{{base_url}}"],
+              "path": ["todos"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 2xx', function() { pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Response is JSON', function() { pm.response.to.be.json; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Todos by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/todos/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["todos", "user", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 2xx', function() { pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Returns array', function(){ var body = pm.response.json(); pm.expect(body).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Toggle Todo (PUT) - replace {{todo_id}}",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/todos/{{todo_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["todos", "{{todo_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 2xx', function() { pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Finances",
+      "item": [
+        {
+          "name": "Create Finance",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\":1,\n  \"amount\":10.5,\n  \"type\": \"ingreso\",\n  \"description\": \"Test\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/finances",
+              "host": ["{{base_url}}"],
+              "path": ["finances"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 2xx', function() { pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Has id', function(){ var b = pm.response.json(); pm.expect(b).to.have.property('id'); pm.collectionVariables.set('finance_id', b.id); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/finances/balance/1",
+              "host": ["{{base_url}}"],
+              "path": ["finances", "balance", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Finance History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/finances/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["finances", "user", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Returns array', function(){ pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Finance (use {{finance_id}})",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/finances/{{finance_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["finances", "{{finance_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 2xx or 404', function(){ pm.expect([200,201,204,404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["user", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User by Email",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/user/test@example.com",
+              "host": ["{{base_url}}"],
+              "path": ["user", "test@example.com"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx or 404', function(){ pm.expect([200,404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "Daily Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/stats/daily/1",
+              "host": ["{{base_url}}"],
+              "path": ["stats", "daily", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Weekly Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/stats/weekly/1",
+              "host": ["{{base_url}}"],
+              "path": ["stats", "weekly", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Missions",
+      "item": [
+        {
+          "name": "Create Mission",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\":1,\n  \"title\":\"Test Mission\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/missions",
+              "host": ["{{base_url}}"],
+              "path": ["missions"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Has id', function(){ var b=pm.response.json(); if(b.id) pm.collectionVariables.set('mission_id', b.id); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Missions by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/missions/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["missions", "user", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Habits",
+      "item": [
+        {
+          "name": "Create Habit",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\":1,\n  \"name\":\"Meditación\",\n  \"frequency\":\"daily\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/habits",
+              "host": ["{{base_url}}"],
+              "path": ["habits"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Has id', function(){ var b=pm.response.json(); pm.collectionVariables.set('habit_id', b.id); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Habits by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/habits/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "user", "1"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Returns array', function(){ pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Habit by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/habits/{{habit_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "{{habit_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Habit",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Meditación (15m)\",\n  \"frequency\": \"daily\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/habits/{{habit_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "{{habit_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Habit",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/habits/{{habit_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "{{habit_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx or 404', function(){ pm.expect([200,204,404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add Habit Log (create/update)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-01-08\",\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/habits/{{habit_id}}/logs",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "{{habit_id}}", "logs"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });",
+                  "pm.test('Has log id', function(){ var b=pm.response.json(); if(b.id) pm.collectionVariables.set('habit_log_id', b.id); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Habit Logs (range)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/habits/{{habit_id}}/logs?start=2026-01-01&end=2026-01-31",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "{{habit_id}}", "logs"],
+              "query": [
+                { "key": "start", "value": "2026-01-01" },
+                { "key": "end", "value": "2026-01-31" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx', function(){ pm.expect(pm.response.code).to.be.within(200,299); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Habit Log by Date",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/habits/{{habit_id}}/logs/2026-01-08",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "{{habit_id}}", "logs", "2026-01-08"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx or 404', function(){ pm.expect([200,404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Habit Log",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"completed\": false\n}" },
+            "url": {
+              "raw": "{{base_url}}/habits/logs/{{habit_log_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "logs", "{{habit_log_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx or 404', function(){ pm.expect([200,404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Habit Log",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/habits/logs/{{habit_log_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["habits", "logs", "{{habit_log_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 2xx or 404', function(){ pm.expect([200,204,404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" },
+    { "key": "todo_id", "value": "1" },
+    { "key": "finance_id", "value": "1" },
+    { "key": "mission_id", "value": "1" },
+    { "key": "habit_id", "value": "1" },
+    { "key": "habit_log_id", "value": "1" }
+  ]
+}

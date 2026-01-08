@@ -23,6 +23,7 @@ Base URL: `http://localhost:8080`
   - **POST** `/finances/` : agregar una transacción — `addTransaction`
   - **GET** `/finances/balance/:id` : obtener balance (por usuario/id) — `getBalance`
   - **GET** `/finances/user/:id` : historial/transacciones del usuario `:id` — `getHistory`
+  - **DELETE** `/finances/:id` : eliminar registro financiero por id — `remove`
 
 - **User:** Base path `/user`
 
@@ -37,11 +38,28 @@ Base URL: `http://localhost:8080`
   - **GET** `/stats/history/:id` : historial de stats para `:id` — `getHistory`
 
 - **Missions:** Base path `/missions`
+
   - **POST** `/missions/` : crear una misión — `create`
   - **GET** `/missions/user/:userId` : obtener todas las misiones del usuario `:userId` — `getAll`
   - **GET** `/missions/primaries/:userId` : obtener misiones primarias del usuario `:userId` — `getPrimaries`
   - **GET** `/missions/secondaries/:parentId` : obtener misiones secundarias hijas de `:parentId` — `getSecondaries`
   - **DELETE** `/missions/:id` : eliminar misión por `:id` — `remove`
+
+- **Habits:** Base path `/habits`
+
+  - **POST** `/habits/` : crear un hábito — `createHabit` (body: `{ user_id, name, frequency? }`)
+  - **GET** `/habits/user/:id` : listar hábitos de un usuario — `getHabitsByUser`
+  - **GET** `/habits/:id` : obtener un hábito por id — `getHabitById`
+  - **PUT** `/habits/:id` : actualizar un hábito — `updateHabit` (body: `{ name?, frequency? }`)
+  - **DELETE** `/habits/:id` : eliminar hábito — `deleteHabit`
+
+  // Habit logs (registro diario de hábitos)
+
+  - **POST** `/habits/:id/logs` : crear/actualizar log del hábito `:id` para una `date` (body: `{ date: 'YYYY-MM-DD', completed: true|false }`) — `addHabitLog`
+  - **GET** `/habits/:id/logs` : listar logs de un hábito `:id` (opcional `?start=YYYY-MM-DD&end=YYYY-MM-DD`) — `getHabitLogs`
+  - **GET** `/habits/:id/logs/:date` : obtener log por fecha — `getHabitLogByDate`
+  - **PUT** `/habits/logs/:logId` : actualizar un log por id — `updateHabitLog`
+  - **DELETE** `/habits/logs/:logId` : eliminar log por id — `deleteHabitLog`
 
 **Notas:**
 
