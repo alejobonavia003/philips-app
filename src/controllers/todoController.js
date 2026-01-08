@@ -164,7 +164,7 @@ export const shareTodo = async (req, res) => {
 export const startTodo = async (req, res) => {
   try {
     const log = await timeModel.startTask(req.params.id);
-    res.status(200).send(log);
+    res.status(200).json({ success: true, started: true, log });
   } catch (error) {
     res.status(500).send({ message: "Error iniciando tarea" });
   }
@@ -176,7 +176,16 @@ export const startTodo = async (req, res) => {
 export const pauseTodo = async (req, res) => {
   try {
     const log = await timeModel.pauseTask(req.params.id);
-    res.status(200).send(log);
+    if (!log)
+      return res.status(400).json({ message: "La tarea no estaba corriendo" });
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        added_seconds: log.added_seconds,
+        todo: log.todo,
+      });
   } catch (error) {
     res.status(500).send({ message: "Error pausando tarea" });
   }

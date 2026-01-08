@@ -85,3 +85,6 @@ CREATE TABLE habit_logs (
 
 -- Planificación Diaria
 ALTER TABLE todos ADD COLUMN scheduled_date DATE DEFAULT CURRENT_DATE;
+
+ALTER TABLE todos ADD COLUMN total_time INTEGER DEFAULT 0;
+ALTER TABLE todos ADD COLUMN last_start_time TEXT DEFAULT NULL;

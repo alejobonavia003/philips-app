@@ -4,15 +4,18 @@ import { query } from "../config/db.js";
  * Iniciar una tarea: Cambia estado a 'en_progreso' y crea un log de tiempo
  */
 export async function startTask(todo_id) {
-  // 1. Cambiamos el estado de la tarea
-  await query("UPDATE todos SET status = 'en_progreso' WHERE id = $1", [
-    todo_id,
-  ]);
-  // 2. Creamos el registro de inicio
+  // 1. Set last_start_time on todos and change status to 'en_progreso'
+  await query(
+    "UPDATE todos SET last_start_time = NOW(), status = 'en_progreso' WHERE id = $1",
+    [todo_id]
+  );
+
+  // 2. Create a time_logs entry for history (optional but useful)
   const result = await query(
     "INSERT INTO time_logs (todo_id, start_time) VALUES ($1, NOW()) RETURNING *",
     [todo_id]
   );
+
   return result.rows[0];
 }
 
@@ -20,17 +23,52 @@ export async function startTask(todo_id) {
  * Pausar una tarea: Cambia estado a 'pausada' y cierra el log de tiempo calculando la duración
  */
 export async function pauseTask(todo_id) {
-  await query("UPDATE todos SET status = 'pausada' WHERE id = $1", [todo_id]);
-  // Cerramos el log que estaba abierto (end_time es NULL)
-  const result = await query(
-    `UPDATE time_logs 
-     SET end_time = NOW(), 
-         duration_seconds = EXTRACT(EPOCH FROM (NOW() - start_time)) 
-     WHERE todo_id = $1 AND end_time IS NULL 
-     RETURNING *`,
+  // 1. Obtener la tarea para leer last_start_time y total_time
+  const todoRes = await query(
+    "SELECT last_start_time, total_time FROM todos WHERE id = $1",
     [todo_id]
   );
-  return result.rows[0];
+
+  if (!todoRes.rows || todoRes.rows.length === 0) {
+    throw new Error("Todo no encontrado");
+  }
+
+  const todo = todoRes.rows[0];
+
+  if (!todo.last_start_time) {
+    // Nada que pausar
+    return null;
+  }
+
+  // 2. Calcular segundos transcurridos usando SQL para evitar problemas de parseo
+  const secondsRes = await query(
+    "SELECT FLOOR(EXTRACT(EPOCH FROM (NOW() - $1::timestamp)))::int AS seconds",
+    [todo.last_start_time]
+  );
+
+  const secondsElapsed = secondsRes.rows[0].seconds || 0;
+
+  // 3. Actualizar la tarea: sumar al total_time, limpiar last_start_time, cambiar estado
+  const updatedTodo = await query(
+    `UPDATE todos
+     SET total_time = COALESCE(total_time, 0) + $1,
+         last_start_time = NULL,
+         status = 'pausada'
+     WHERE id = $2
+     RETURNING *`,
+    [secondsElapsed, todo_id]
+  );
+
+  // 4. Actualizar el time_log abierto por consistencia (si existe)
+  await query(
+    `UPDATE time_logs
+     SET end_time = NOW(),
+         duration_seconds = $1
+     WHERE todo_id = $2 AND end_time IS NULL`,
+    [secondsElapsed, todo_id]
+  );
+
+  return { added_seconds: secondsElapsed, todo: updatedTodo.rows[0] };
 }
 
 export const getDailyStats = async (user_id) => {
